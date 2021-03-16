@@ -1,3 +1,4 @@
+import 'package:egresso_ifpi/ui/user/home/home.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -96,7 +97,12 @@ class LoginScreen extends StatelessWidget {
                       'Entrar',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return Home();
+                      }));
+                    },
                   ),
                 ),
               ],
