@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "534328877383",
+    "project_id": "egresso-ifpi",
+    "storage_bucket": "egresso-ifpi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534328877383:android:7d5b0386bc18ff2366ac62",
+        "android_client_info": {
+          "package_name": "edu.ifpi.egresso_ifpi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534328877383-u2m3qvktpjbpl6vs7nui306fav2655t4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ifpi.egresso_ifpi",
+            "certificate_hash": "774180a836964f688635c2a9b9fdc6feed180438"
+          }
+        },
+        {
+          "client_id": "534328877383-gr75oji94rhqkdalaiolrkje68h62bkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPGGNN3jczIsAyEEWpt684HDdJzOWHu-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534328877383-gr75oji94rhqkdalaiolrkje68h62bkq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
