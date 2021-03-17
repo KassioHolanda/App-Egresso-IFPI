@@ -1,7 +1,15 @@
+import 'package:egresso_ifpi/controllers/login_controller.dart';
 import 'package:egresso_ifpi/ui/user/home/home.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
+  final loginController = LoginController();
+  final _scafoldkey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,6 +19,7 @@ class LoginScreen extends StatelessWidget {
               end: Alignment.bottomLeft,
               colors: [Colors.green[100], Colors.red[100]])),
       child: Scaffold(
+        key: _scafoldkey,
         backgroundColor: Colors.transparent,
         body: Center(
           child: Container(
@@ -37,20 +46,37 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                             color: Colors.white,
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                decoration: InputDecoration(hintText: 'Email'),
-                              ),
-                              TextFormField(
-                                obscureText: true,
-                                decoration: InputDecoration(hintText: 'Senha'),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  controller: emailController,
+                                  decoration:
+                                      InputDecoration(hintText: 'Email'),
+                                  validator: (text) {
+                                    if (text.isEmpty) {
+                                      return 'Email não pode ficar em branco.';
+                                    }
+                                  },
+                                ),
+                                TextFormField(
+                                  controller: passwordController,
+                                  obscureText: true,
+                                  decoration:
+                                      InputDecoration(hintText: 'Senha'),
+                                  validator: (text) {
+                                    if (text.isEmpty) {
+                                      return 'Senha não pode ficar em branco.';
+                                    }
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -90,18 +116,34 @@ class LoginScreen extends StatelessWidget {
                   ),
                   width: MediaQuery.of(context).size.width,
                   child: FlatButton(
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(20)),
-                    // color: Colors.deepPurple,
                     child: Text(
                       'Entrar',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return Home();
-                      }));
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        print(
+                            '${emailController.text}\n ${passwordController.text}');
+                        await loginController
+                            .loginComEmail(
+                                emailController.text, passwordController.text)
+                            .then((value) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return Home();
+                          }));
+                        }).catchError((error) {
+                          _scafoldkey.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              error.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            duration: new Duration(seconds: 3),
+                          ));
+                        });
+                      }
                     },
                   ),
                 ),
