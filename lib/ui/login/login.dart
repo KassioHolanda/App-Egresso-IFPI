@@ -1,6 +1,8 @@
 import 'package:egresso_ifpi/controllers/login_controller.dart';
+import 'package:egresso_ifpi/ui/login/register_user.dart';
 import 'package:egresso_ifpi/ui/user/home/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class LoginScreen extends StatelessWidget {
   final loginController = LoginController();
@@ -103,50 +105,87 @@ class LoginScreen extends StatelessWidget {
                       'Criar novo usuário',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return RegisterUserScreen();
+                      }));
+                    },
                   ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Colors.green[300],
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  child: FlatButton(
-                    child: Text(
-                      'Entrar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        print(
-                            '${emailController.text}\n ${passwordController.text}');
-                        await loginController
-                            .loginComEmail(
-                                emailController.text, passwordController.text)
-                            .then((value) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return Home();
-                          }));
-                        }).catchError((error) {
-                          _scafoldkey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                              error.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 14),
+                Observer(
+                  builder: (_) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: !loginController.loadingUtils.loading
+                            ? Colors.green[300]
+                            : Colors.green[100],
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      child: FlatButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            loginController.loadingUtils.loading
+                                ? Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  )
+                                : Container(
+                                    width: 0,
+                                  ),
+                            SizedBox(
+                              width: 10,
                             ),
-                            behavior: SnackBarBehavior.floating,
-                            duration: new Duration(seconds: 3),
-                          ));
-                        });
-                      }
-                    },
-                  ),
-                ),
+                            Text(
+                              'Entrar',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                        onPressed: !loginController.loadingUtils.loading
+                            ? () async {
+                                if (_formKey.currentState.validate()) {
+                                  print(
+                                      '${emailController.text}\n ${passwordController.text}');
+                                  await loginController
+                                      .loginComEmail(emailController.text,
+                                          passwordController.text)
+                                      .then((value) {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                      return Home();
+                                    }));
+                                  }).catchError((error) {
+                                    _scafoldkey.currentState
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        error.toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14),
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: new Duration(seconds: 3),
+                                    ));
+                                  });
+                                }
+                              }
+                            : null,
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),
