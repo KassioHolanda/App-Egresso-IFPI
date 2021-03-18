@@ -28,9 +28,10 @@ mixin _$LoginController on _LoginControllerBase, Store {
       AsyncAction('_LoginControllerBase.loginComEmail');
 
   @override
-  Future loginComEmail(String email, String password) {
+  Future loginComEmail(
+      String email, String password, Function message, Function action) {
     return _$loginComEmailAsyncAction
-        .run(() => super.loginComEmail(email, password));
+        .run(() => super.loginComEmail(email, password, message, action));
   }
 
   final _$createLoginAsyncAction =
@@ -39,6 +40,20 @@ mixin _$LoginController on _LoginControllerBase, Store {
   @override
   Future createLogin() {
     return _$createLoginAsyncAction.run(() => super.createLogin());
+  }
+
+  final _$_LoginControllerBaseActionController =
+      ActionController(name: '_LoginControllerBase');
+
+  @override
+  dynamic validateErrorsLogin(String code) {
+    final _$actionInfo = _$_LoginControllerBaseActionController.startAction(
+        name: '_LoginControllerBase.validateErrorsLogin');
+    try {
+      return super.validateErrorsLogin(code);
+    } finally {
+      _$_LoginControllerBaseActionController.endAction(_$actionInfo);
+    }
   }
 
   @override
