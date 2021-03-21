@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
-  Future createLoginWithMail(String email, String senha) async {
+  createLoginWithMail(String email, String senha) async {
     try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: senha);
+      return await auth.createUserWithEmailAndPassword(email: email, password: senha);
       //     .then((value) {
       //   print('logado');
       // }).catchError((error) {
@@ -14,14 +14,13 @@ class AuthService {
       //   print('error');
       // });
 
-      return;
     } catch (e) {
       print(e);
     }
   }
 
   Future loginWithMail(String email, String senha) async {
-    return await _auth.signInWithEmailAndPassword(
+    return await auth.signInWithEmailAndPassword(
         email: email, password: senha);
     //     .then((value) {
     //   print(value);
@@ -31,11 +30,11 @@ class AuthService {
   }
 
   Future recoveryPassword(String emailRecebido) async {
-    await _auth.sendPasswordResetEmail(email: emailRecebido);
+    await auth.sendPasswordResetEmail(email: emailRecebido);
   }
 
   @override
   Future logOut() async {
-    await _auth.signOut();
+    await auth.signOut();
   }
 }

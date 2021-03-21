@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-part 'usuario.g.dart';
+part 'user.g.dart';
 
 class Usuario = _UsuarioBase with _$Usuario;
 

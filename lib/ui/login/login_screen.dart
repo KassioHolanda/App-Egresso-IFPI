@@ -1,6 +1,6 @@
 import 'package:egresso_ifpi/controllers/login_controller.dart';
-import 'package:egresso_ifpi/ui/login/register_user.dart';
-import 'package:egresso_ifpi/ui/user/home/home.dart';
+import 'package:egresso_ifpi/ui/home/home_screen.dart';
+import 'package:egresso_ifpi/ui/login/register_user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -137,7 +137,7 @@ class LoginScreen extends StatelessWidget {
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color: !loginController.loadingUtils.loading
+                        color: !loginController.utils.loading
                             ? Colors.green[400]
                             : Colors.green[100],
                       ),
@@ -146,7 +146,7 @@ class LoginScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            loginController.loadingUtils.loading
+                            loginController.utils.loading
                                 ? Container(
                                     width: 20,
                                     height: 20,
@@ -168,7 +168,7 @@ class LoginScreen extends StatelessWidget {
                             )
                           ],
                         ),
-                        onPressed: !loginController.loadingUtils.loading
+                        onPressed: !loginController.utils.loading
                             ? () async {
                                 if (_formKey.currentState.validate()) {
                                   print(

@@ -1,6 +1,7 @@
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
-import 'package:egresso_ifpi/utils/loading_utils.dart';
+import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 part 'login_controller.g.dart';
 
@@ -8,7 +9,7 @@ class LoginController = _LoginControllerBase with _$LoginController;
 
 abstract class _LoginControllerBase with Store {
   final authService = AuthService();
-  final loadingUtils = LoadingUtils();
+  final utils = GetIt.I.get<Utils>();
 
   @observable
   bool loading = false;
@@ -16,16 +17,16 @@ abstract class _LoginControllerBase with Store {
   @action
   loginComEmail(
       String email, String password, Function message, Function action) async {
-    loadingUtils.iniciarLoding();
+    utils.iniciarLoding();
 
     await authService.loginWithMail(email, password).then((value) {
-      loadingUtils.encerrarLoading();
+      utils.encerrarLoading();
       action();
     }).catchError((error) {
-      loadingUtils.encerrarLoading();
+      utils.encerrarLoading();
       message(validateErrorsLogin(error.code));
     });
-  }  
+  }
 
   @action
   createLogin() async {

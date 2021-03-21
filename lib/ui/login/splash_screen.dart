@@ -1,4 +1,4 @@
-import 'package:egresso_ifpi/ui/user/home/home.dart';
+import 'package:egresso_ifpi/ui/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
