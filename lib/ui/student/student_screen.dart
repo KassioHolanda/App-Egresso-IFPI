@@ -1,4 +1,4 @@
-import 'package:egresso_ifpi/domain/model/student.dart';
+import 'package:egresso_ifpi/domain/model/aluno.dart';
 import 'package:egresso_ifpi/ui/config/drawer.dart';
 import 'package:egresso_ifpi/ui/student/detail_student_screen.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
@@ -55,7 +55,7 @@ class StudentScreen extends StatelessWidget {
                               ),
                               controller: TextEditingController(
                                   text:
-                                      '${student.status.replaceAll('_', ' ').toUpperCase()}'),
+                                      ''),
                             ),
                             // TextFormField(
                             //   enabled: false,
@@ -91,11 +91,11 @@ class StudentScreen extends StatelessWidget {
                               child: Icon(Icons.person),
                             ),
                             title: Text(
-                              '${student.nome}',
+                              '',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle:
-                                Text('${student.matricula.toUpperCase()}'),
+                                Text(''),
                           ),
                         ));
                       },

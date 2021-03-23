@@ -1,4 +1,4 @@
-import 'package:egresso_ifpi/domain/model/student.dart';
+import 'package:egresso_ifpi/domain/model/aluno.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -60,17 +60,16 @@ class DetailStudent extends StatelessWidget {
                     if (utils.coursesFinded.length > 0) {
                       return ListTile(
                         trailing: Checkbox(
-                          onChanged: (bool value) {
-                            student.setCourse(utils.coursesFinded[index].uid);
-                          },
+                          onChanged: (bool value) {},
                           value:
-                              utils.coursesFinded[index].uid == student.cursoUid
-                                  ? true
-                                  : false,
+                              // utils.coursesFinded[index].uid == student.cursoUid
+                              //     ? true
+                              //     :
+                              false,
                         ),
                         leading: Text('${index + 1}'),
-                        title: Text('${utils.coursesFinded[index].descricao}'),
-                        subtitle: Text('${utils.coursesFinded[index].nivel}'),
+                        title: Text(''),
+                        subtitle: Text(''),
                       );
                     }
                     return Container();
@@ -93,8 +92,8 @@ class DetailStudent extends StatelessWidget {
           key: _formKey,
           child: ListView(
             children: [
-              formLabel('Nome', TextEditingController(text: student.nome),
-                  student.setNome, (String text) {
+              formLabel('Nome', TextEditingController(text: ''), () {},
+                  (String text) {
                 if (text.isEmpty) {
                   return 'Campo obrigatório';
                 }
@@ -102,8 +101,8 @@ class DetailStudent extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              formLabel('Email', TextEditingController(text: student.email),
-                  student.setEmail, (String text) {
+              formLabel('Email', TextEditingController(text: ''), () {},
+                  (String text) {
                 if (text.isEmpty) {
                   return 'Campo obrigatório';
                 } else if (!text.contains('@')) {
@@ -113,10 +112,8 @@ class DetailStudent extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              formLabel(
-                  'Matricula',
-                  TextEditingController(text: student.matricula.toUpperCase()),
-                  student.setMatricula, (String text) {
+              formLabel('Matricula', TextEditingController(text: ''), () {},
+                  (String text) {
                 if (text.isEmpty) {
                   return 'Campo obrigatório';
                 }
@@ -125,10 +122,8 @@ class DetailStudent extends StatelessWidget {
                 height: 10,
               ),
               formLabel(
-                  'Data nascimento',
-                  TextEditingController(
-                      text: utils.returnDateDefault(student.dataNascimento)),
-                  student.setMatricula, (String text) {
+                  'Data nascimento', TextEditingController(text: ''), () {},
+                  (String text) {
                 if (text.isEmpty) {
                   return 'Campo obrigatório';
                 }
@@ -137,10 +132,8 @@ class DetailStudent extends StatelessWidget {
                 height: 10,
               ),
               formLabel(
-                  'Status matricula',
-                  TextEditingController(
-                      text: student.status.toUpperCase().replaceAll('_', ' ')),
-                  student.setMatricula, (String text) {
+                  'Status matricula', TextEditingController(text: ''), () {},
+                  (String text) {
                 if (text.isEmpty) {
                   return 'Campo obrigatório';
                 }
@@ -151,8 +144,8 @@ class DetailStudent extends StatelessWidget {
               formLabel(
                   'CPF',
                   MaskedTextController(
-                      mask: '000.000.000-00', text: student.cpf),
-                  student.setMatricula, (String text) {
+                      mask: '000.000.000-00', text: ''),
+                  () {}, (String text) {
                 if (text.isEmpty) {
                   return 'Campo obrigatório';
                 }
