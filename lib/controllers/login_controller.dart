@@ -1,3 +1,4 @@
+import 'package:egresso_ifpi/controllers/user_controller.dart';
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ class LoginController = _LoginControllerBase with _$LoginController;
 abstract class _LoginControllerBase with Store {
   final authService = AuthService();
   final utils = GetIt.I.get<Utils>();
+  final userController = GetIt.I.get<UserController>();
 
   @observable
   bool loading = false;
@@ -19,14 +21,35 @@ abstract class _LoginControllerBase with Store {
       String email, String password, Function message, Function action) async {
     utils.iniciarLoding();
 
-    await authService.loginWithMail(email, password).then((value) {
+    await authService.loginWithMail(email, password).then((value) async {
       utils.encerrarLoading();
+      UserCredential usuario = value;
+      await userController.recoveryUserFromAuth(usuario.user.uid);
+
       action();
     }).catchError((error) {
+      print('erro encontrado  $error');
       utils.encerrarLoading();
       message(validateErrorsLogin(error.code));
     });
   }
+
+  logoutUser() async {
+    await authService.logOut();
+  }
+
+  isLoggedIn(Function loginUser, Function loginPage) async {
+    if (authService.auth.currentUser != null) {
+      await userController
+          .recoveryUserFromAuth(authService.auth.currentUser.uid);
+      loginUser();
+    } else {
+      loginPage();
+    }
+  }
+
+  @action
+  recoverDataUser() async {}
 
   @action
   createLogin() async {
