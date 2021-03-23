@@ -8,22 +8,22 @@ abstract class _CourseModelBase with Store {
   @observable
   String uid;
   @observable
-  String descricao;
+  String description;
   @observable
-  String nivel;
+  String level;
 
   @action
   setUid(String value) => uid = value;
 
   @action
-  setDescricao(String value) => descricao = value;
+  setDescription(String value) => description = value;
 
   @action
-  setNivel(String value) => nivel = value;
+  setLevel(String value) => level = value;
 
   _CourseModelBase.fromDocument(DocumentSnapshot documentSnapshot) {
     uid = documentSnapshot.id;
-    descricao = documentSnapshot.data()['descricao'];
-    nivel = documentSnapshot.data()['nivel'];
+    description = documentSnapshot.data()['descricao'];
+    level = documentSnapshot.data()['nivel'];
   }
 }
