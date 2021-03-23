@@ -171,8 +171,6 @@ class LoginScreen extends StatelessWidget {
                         onPressed: !loginController.utils.loading
                             ? () async {
                                 if (_formKey.currentState.validate()) {
-                                  print(
-                                      '${emailController.text}\n ${passwordController.text}');
                                   await loginController.loginComEmail(
                                       emailController.text,
                                       passwordController.text,
