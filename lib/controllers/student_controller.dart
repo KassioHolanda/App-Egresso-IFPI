@@ -1,7 +1,7 @@
 import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:egresso_ifpi/domain/model/student.dart';
+import 'package:egresso_ifpi/domain/model/aluno.dart';
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
 import 'package:mobx/mobx.dart';
 part 'student_controller.g.dart';
@@ -13,8 +13,8 @@ abstract class _StudentControllerBase with Store {
 
   saveStudent(StudentModel student) async {
     await FirebaseFirestore.instance
-        .collection('alunos')
-        .doc(student.pessoaUid)
+        .collection('aluno')
+        .doc(student.personUid)
         .update(student.toMap());
   }
 }
