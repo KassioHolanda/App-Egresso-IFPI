@@ -35,6 +35,7 @@ dependencies:
   firebase_auth:
   firebase_core:
   flutter_masked_text:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

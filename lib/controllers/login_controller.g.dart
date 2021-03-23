@@ -34,6 +34,14 @@ mixin _$LoginController on _LoginControllerBase, Store {
         .run(() => super.loginComEmail(email, password, message, action));
   }
 
+  final _$recoverDataUserAsyncAction =
+      AsyncAction('_LoginControllerBase.recoverDataUser');
+
+  @override
+  Future recoverDataUser() {
+    return _$recoverDataUserAsyncAction.run(() => super.recoverDataUser());
+  }
+
   final _$createLoginAsyncAction =
       AsyncAction('_LoginControllerBase.createLogin');
 

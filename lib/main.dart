@@ -1,4 +1,5 @@
 import 'package:egresso_ifpi/controllers/drawer_controller.dart';
+import 'package:egresso_ifpi/controllers/user_controller.dart';
 import 'package:egresso_ifpi/ui/app/app.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +12,7 @@ void main() async {
   GetIt getIt = GetIt.I;
   getIt.registerLazySingleton(() => DrawerPageController());
   getIt.registerLazySingleton(() => Utils());
+  getIt.registerLazySingleton(() => UserController());
 
   runApp(App());
 }
