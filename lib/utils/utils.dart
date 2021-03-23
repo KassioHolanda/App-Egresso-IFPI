@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:egresso_ifpi/domain/model/course.dart';
+import 'package:egresso_ifpi/domain/model/curso.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'utils.g.dart';
 
 class Utils = _UtilsBase with _$Utils;
@@ -46,5 +47,10 @@ abstract class _UtilsBase with Store {
         coursesFinded.add(CourseModel.fromDocument(document));
       }
     });
+  }
+
+  isAdminUser() async {
+    final preffs = await SharedPreferences.getInstance();
+    return preffs.getBool('admin');
   }
 }
