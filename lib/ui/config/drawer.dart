@@ -1,11 +1,17 @@
 import 'package:egresso_ifpi/controllers/drawer_controller.dart';
+import 'package:egresso_ifpi/controllers/login_controller.dart';
+import 'package:egresso_ifpi/ui/home/home_screen.dart';
+import 'package:egresso_ifpi/ui/login/login_screen.dart';
+import 'package:egresso_ifpi/ui/settings/settings_screen.dart';
 import 'package:egresso_ifpi/ui/student/student_screen.dart';
+import 'package:egresso_ifpi/ui/user/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 
 class DrawerConfig extends StatelessWidget {
   final drawerController = GetIt.I.get<DrawerPageController>();
+  final loginController = LoginController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +54,7 @@ class DrawerConfig extends StatelessWidget {
                       ? Colors.white
                       : Colors.grey,
                 ),
-                selectedTileColor: Colors.green[300],
+                selectedTileColor: Colors.green[400],
                 selected: drawerController.numPage == 0,
                 title: Text(
                   'Pagina inicial',
@@ -59,10 +65,14 @@ class DrawerConfig extends StatelessWidget {
                 ),
                 onTap: () {
                   drawerController.setNumPage(0);
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return Home();
+                  }));
                 },
               ),
               ListTile(
-                selectedTileColor: Colors.green[300],
+                selectedTileColor: Colors.green[400],
                 selected: drawerController.numPage == 1,
                 leading: Icon(
                   Icons.group,
@@ -86,7 +96,7 @@ class DrawerConfig extends StatelessWidget {
                 },
               ),
               ListTile(
-                selectedTileColor: Colors.green[300],
+                selectedTileColor: Colors.green[400],
                 selected: drawerController.numPage == 2,
                 leading: Icon(
                   Icons.supervised_user_circle_rounded,
@@ -103,10 +113,14 @@ class DrawerConfig extends StatelessWidget {
                 ),
                 onTap: () {
                   drawerController.setNumPage(2);
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return UserScreen();
+                  }));
                 },
               ),
               ListTile(
-                selectedTileColor: Colors.green[300],
+                selectedTileColor: Colors.green[400],
                 selected: drawerController.numPage == 3,
                 title: Text(
                   'Configurações',
@@ -117,6 +131,10 @@ class DrawerConfig extends StatelessWidget {
                 ),
                 onTap: () {
                   drawerController.setNumPage(3);
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return SettingsScreen();
+                  }));
                 },
                 leading: Icon(
                   Icons.settings,
@@ -134,7 +152,13 @@ class DrawerConfig extends StatelessWidget {
                   'Sair',
                   style: TextStyle(color: Colors.red),
                 ),
-                onTap: () {},
+                onTap: () {
+                  loginController.logoutUser();
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return LoginScreen();
+                  }));
+                },
               ),
             ],
           );
