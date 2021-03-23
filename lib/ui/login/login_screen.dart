@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
 
     nextPage() {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
+          .pushReplacement(MaterialPageRoute(builder: (BuildContext context) {
         return Home();
       }));
     }
