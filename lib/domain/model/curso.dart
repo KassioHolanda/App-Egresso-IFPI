@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
-part 'course.g.dart';
+part 'curso.g.dart';
 
-class CourseModel = _CourseModelBase with _$CourseModel;
+class CursoModel = _CursoModelBase with _$CursoModel;
 
-abstract class _CourseModelBase with Store {
+abstract class _CursoModelBase with Store {
   @observable
   String uid;
   @observable
@@ -21,7 +21,7 @@ abstract class _CourseModelBase with Store {
   @action
   setLevel(String value) => level = value;
 
-  _CourseModelBase.fromDocument(DocumentSnapshot documentSnapshot) {
+  _CursoModelBase.fromDocument(DocumentSnapshot documentSnapshot) {
     uid = documentSnapshot.id;
     description = documentSnapshot.data()['descricao'];
     level = documentSnapshot.data()['nivel'];

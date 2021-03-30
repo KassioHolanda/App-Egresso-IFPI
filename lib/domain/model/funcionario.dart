@@ -9,10 +9,23 @@ abstract class _FuncionarioModelBase with Store {
   String uid;
   @observable
   String pessoaUid;
-  
+
+  @action
+  setUid(String value) => uid = value;
+  @action
+  setPessoaUid(String value) => pessoaUid = value;
+
+  _FuncionarioModelBase();
 
   _FuncionarioModelBase.fromDocument(DocumentSnapshot documentSnapshot) {
     uid = documentSnapshot.id;
     pessoaUid = documentSnapshot.data()['pessoa_uid'];
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      // 'uid': uid,
+      'pessoa_uid': pessoaUid,
+    };
   }
 }
