@@ -29,19 +29,20 @@ dependencies:
   cupertino_icons: ^1.0.0
   cloud_firestore:
   firebase_storage:
-  mobx:
-  flutter_mobx:
+  mobx: ^1.0.0
+  flutter_mobx: ^1.0.0  
   get_it:
   firebase_auth:
   firebase_core:
   flutter_masked_text:
   shared_preferences:
+  # textfield_tags:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.11.1
-  mobx_codegen:
+  build_runner: ^1.7.2
+  mobx_codegen: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
