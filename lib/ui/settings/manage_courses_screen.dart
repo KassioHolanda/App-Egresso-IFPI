@@ -26,7 +26,7 @@ class ManageCoursesScreen extends StatelessWidget {
                 if (documents.length > 0) {
                   return ListView.builder(
                     itemBuilder: (_, index) {
-                      final course = CourseModel.fromDocument(documents[index]);
+                      final course = CursoModel.fromDocument(documents[index]);
                       return ListTile(
                         title: Text(
                           '${course.description}',
