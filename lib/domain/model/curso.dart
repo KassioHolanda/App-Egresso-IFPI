@@ -21,9 +21,18 @@ abstract class _CursoModelBase with Store {
   @action
   setLevel(String value) => level = value;
 
+  _CursoModelBase();
+
   _CursoModelBase.fromDocument(DocumentSnapshot documentSnapshot) {
     uid = documentSnapshot.id;
     description = documentSnapshot.data()['descricao'];
     level = documentSnapshot.data()['nivel'];
+  }
+
+  toMap() {
+    return {
+      'descricao' : description,
+      'nivel' : level,
+    };
   }
 }
