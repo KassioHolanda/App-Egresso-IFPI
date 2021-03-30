@@ -11,7 +11,7 @@ abstract class _UtilsBase with Store {
   bool loading = false;
 
   @observable
-  List<CourseModel> coursesFinded = new List();
+  List<CursoModel> coursesFinded = new List();
 
   _UtilsBase() {
     returnAllCourses();
@@ -31,10 +31,10 @@ abstract class _UtilsBase with Store {
   returnDateDefault(Timestamp dateTime) {
     String day = dateTime.toDate().day < 10
         ? '0' + dateTime.toDate().day.toString()
-        : dateTime.toDate().day;
+        : dateTime.toDate().day.toString();
     String month = dateTime.toDate().month < 10
         ? '0' + dateTime.toDate().month.toString()
-        : dateTime.toDate().month;
+        : dateTime.toDate().month.toString();
     return '$day/$month/${dateTime.toDate().year}';
   }
 
@@ -44,7 +44,7 @@ abstract class _UtilsBase with Store {
         .get()
         .then((QuerySnapshot value) {
       for (QueryDocumentSnapshot document in value.docs) {
-        coursesFinded.add(CourseModel.fromDocument(document));
+        coursesFinded.add(CursoModel.fromDocument(document));
       }
     });
   }

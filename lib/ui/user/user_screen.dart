@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:egresso_ifpi/domain/model/funcionario.dart';
+import 'package:egresso_ifpi/controllers/manage_user_controller.dart';
+import 'package:egresso_ifpi/domain/model/usuario.dart';
 import 'package:egresso_ifpi/ui/config/drawer.dart';
 import 'package:egresso_ifpi/ui/user/add_user_screen.dart';
 import 'package:egresso_ifpi/ui/user/cards/user_card.dart';
 import 'package:flutter/material.dart';
 
 class UserScreen extends StatelessWidget {
+  final manageUserController = ManageUserController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,21 +41,24 @@ class UserScreen extends StatelessWidget {
                     ),
                   );
                 default:
-                  final documents = snapshot.data.docs;
-                  if (documents.length > 0) {
+                  final users = snapshot.data.docs;
+
+                  if (users.length > 0) {
                     return ListView.builder(
-                      itemBuilder: (_, index) {
-                        final funcionario =
-                            FuncionarioModel.fromDocument(documents[index]);
-                        return UserCard(funcionario);
-                      },
-                      itemCount: documents.length,
-                    );
+                        itemBuilder: (_, index) {
+                          final usuario = Usuario.fromDocument(users[index]);
+                          return UserCard(usuario);
+                        },
+                        itemCount: users.length);
                   }
                   return Container();
               }
             },
-            future: FirebaseFirestore.instance.collection('funcionario').get(),
+            future: FirebaseFirestore.instance
+                .collection('usuario')
+                // .where('tipo_usuario', isEqualTo: 'admin')
+                .where('tipo_usuario', isNotEqualTo: 'aluno')
+                .get(),
           )),
     );
   }
