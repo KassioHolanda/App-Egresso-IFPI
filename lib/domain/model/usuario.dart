@@ -11,6 +11,8 @@ abstract class _UsuarioBase with Store {
   String pessoaUid;
   @observable
   String tipoUsuario;
+  @observable
+  String uid;
 
   @action
   setAuthUid(String value) => authUid = value;
@@ -24,17 +26,17 @@ abstract class _UsuarioBase with Store {
 
   @action
   _UsuarioBase.fromDocument(DocumentSnapshot documentSnapshot) {
+    uid = documentSnapshot.id;
     authUid = documentSnapshot.data()['auth_uid'];
     pessoaUid = documentSnapshot.data()['pessoa_uid'];
     tipoUsuario = documentSnapshot.data()['tipo_usuario'];
   }
 
-Map<String, dynamic> toMap() {
-    return {      
-      'authUid': authUid,
-      'pessoaUid': pessoaUid,
+  Map<String, dynamic> toMap() {
+    return {
+      'auth_uid': authUid,
+      'pessoa_uid': pessoaUid,
       'tipo_usuario': tipoUsuario,
     };
   }
-
 }

@@ -30,7 +30,7 @@ abstract class _PessoaModelBase with Store {
   _PessoaModelBase.fromDocument(DocumentSnapshot documentSnapshot) {
     uid = documentSnapshot.id;
     cpf = documentSnapshot.data()['cpf'];
-    dataNascimento = documentSnapshot.data()['dataNascimento'];
+    dataNascimento = documentSnapshot.data()['data_nascimento'];
     email = documentSnapshot.data()['email'];
     nome = documentSnapshot.data()['nome'];
   }

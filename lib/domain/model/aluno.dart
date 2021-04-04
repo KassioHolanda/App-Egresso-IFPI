@@ -21,7 +21,7 @@ abstract class _StudentModelBase with Store {
 
   Map<String, dynamic> toMap() {
     return {
-      'dataCadastro': dateRegister,
+      'data_cadastro': dateRegister,
     };
   }
 }

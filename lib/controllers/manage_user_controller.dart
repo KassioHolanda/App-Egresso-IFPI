@@ -5,6 +5,7 @@ import 'package:egresso_ifpi/domain/model/curso_funcionario.dart';
 import 'package:egresso_ifpi/domain/model/funcionario.dart';
 import 'package:egresso_ifpi/domain/model/pessoa.dart';
 import 'package:egresso_ifpi/domain/model/usuario.dart';
+import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
@@ -15,6 +16,7 @@ class ManageUserController = _ManageUserControllerBase
 
 abstract class _ManageUserControllerBase with Store {
   final userController = GetIt.I.get<UserController>();
+  final utils = GetIt.I.get<Utils>();
 
   @observable
   ObservableList<dynamic> coursesSelect = ObservableList().asObservable();
@@ -61,6 +63,39 @@ abstract class _ManageUserControllerBase with Store {
   }
 
   @action
+  update(Function message) async {
+    try {
+      utils.iniciarLoding();
+      if (usuario.tipoUsuario == 'funcionario') {
+      } else if (usuario.tipoUsuario == 'admin') {
+        await updatePerson();
+        // await updateEmployee();
+        message('Cadastro atualizado');
+      }
+      utils.encerrarLoading();
+    } catch (e) {
+      message('Ocorreu um erro ao cadastrar, tente novamente.');
+      utils.encerrarLoading();
+    }
+  }
+
+  @action
+  updatePerson() async {
+    await FirebaseFirestore.instance
+        .collection('pessoa')
+        .doc(pessoa.uid)
+        .update(pessoa.toMap());
+  }
+
+  @action
+  updateEmployee() async {
+    await FirebaseFirestore.instance
+        .collection('funcionario')
+        .doc(funcionario.uid)
+        .update(funcionario.toMap());
+  }
+
+  @action
   saveEmployee() async {
     await FirebaseFirestore.instance
         .collection('funcionario')
@@ -96,8 +131,21 @@ abstract class _ManageUserControllerBase with Store {
   }
 
   @action
+  recoveryDataUserLogin() async {
+    await FirebaseFirestore.instance
+        .collection('usuario')
+        .doc(userController.user.uid)
+        .get()
+        .then((value) => this.usuario = Usuario.fromDocument(value));
+  }
+
+  @action
   recoveryDataUser(Usuario usuario) async {
-    this.usuario = usuario;
+    if (usuario != null) {
+      this.usuario = usuario;
+    } else {
+      await recoveryDataUserLogin();
+    }
 
     await recoveryUser();
     await recoveryEmployee();
@@ -119,9 +167,13 @@ abstract class _ManageUserControllerBase with Store {
         .collection('cursoFuncionario')
         .where('funcionario_uid', isEqualTo: funcionario.uid)
         .get()
-        .then((value) {
+        .then((value) async {
       for (DocumentSnapshot doc in value.docs) {
-        coursesEmployee.add(CursoFuncionarioModel.fromDocument(doc));
+        final courseEmp = CursoFuncionarioModel.fromDocument(doc);
+        courseEmp.setCursoModel(await recoveryCourse(courseEmp.cursoUid));
+        courseEmp.setFuncionarioModel(
+            await recoveryEmployeeModel(courseEmp.funcionarioUid));
+        coursesEmployee.add(courseEmp);
       }
     });
 
@@ -132,6 +184,22 @@ abstract class _ManageUserControllerBase with Store {
           .get()
           .then((value) => coursesSelect.add(CursoModel.fromDocument(value)));
     }
+  }
+
+  recoveryCourse(String courseUid) async {
+    final value = await FirebaseFirestore.instance
+        .collection('curso')
+        .doc(courseUid)
+        .get();
+    return CursoModel.fromDocument(value);
+  }
+
+  recoveryEmployeeModel(String employee) async {
+    final value = await FirebaseFirestore.instance
+        .collection('funcionario')
+        .doc(employee)
+        .get();
+    return FuncionarioModel.fromDocument(value);
   }
 
   @action
@@ -148,7 +216,7 @@ abstract class _ManageUserControllerBase with Store {
 
   // recoveryCourses(documentSnapshot) {
   //   List<DropdownMenuItem<List<CursoModel>>> cursos = List();
-    
+
   //   for (DocumentSnapshot doc in documentSnapshot) {
   //     final curso = CursoModel.fromDocument(doc);
   //     cursos.add(DropdownMenuItem(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egresso_ifpi/domain/model/curso.dart';
+import 'package:egresso_ifpi/domain/model/funcionario.dart';
 import 'package:mobx/mobx.dart';
 part 'curso_funcionario.g.dart';
 
@@ -18,9 +19,15 @@ abstract class _CursoFuncionarioModelBase with Store {
 
   @observable
   CursoModel cursoModel;
+  @observable
+  FuncionarioModel funcionarioModel;
 
   _CursoFuncionarioModelBase();
 
+  @action
+  setCursoModel(CursoModel value) => cursoModel = value;
+  @action
+  setFuncionarioModel(FuncionarioModel value) => funcionarioModel = value;
   @action
   setFuncionarioUid(String value) => funcionarioUid = value;
   @action
