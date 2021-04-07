@@ -31,8 +31,13 @@ abstract class _CursoModelBase with Store {
 
   toMap() {
     return {
-      'descricao' : description,
-      'nivel' : level,
+      'descricao': description,
+      'nivel': level,
     };
+  }
+
+  @override
+  String toString() {
+    return this.description;
   }
 }

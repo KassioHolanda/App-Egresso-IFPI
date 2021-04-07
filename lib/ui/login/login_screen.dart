@@ -68,7 +68,9 @@ class LoginScreen extends StatelessWidget {
                               TextFormField(
                                 controller: emailController,
                                 decoration: InputDecoration(
-                                    labelText: 'Email',
+                                    hintText: 'Email',
+                                    fillColor: Colors.white.withOpacity(0.6),
+                                    filled: true,
                                     border: OutlineInputBorder()),
                                 validator: (text) {
                                   if (text.isEmpty) {
@@ -83,7 +85,9 @@ class LoginScreen extends StatelessWidget {
                                 controller: passwordController,
                                 obscureText: true,
                                 decoration: InputDecoration(
-                                    labelText: 'Senha',
+                                    hintText: 'Senha',
+                                    fillColor: Colors.white.withOpacity(0.6),
+                                    filled: true,
                                     border: OutlineInputBorder()),
                                 validator: (text) {
                                   if (text.isEmpty) {
@@ -110,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
-                    color: Colors.red[400],
+                    color: Colors.red,
                   ),
                   width: MediaQuery.of(context).size.width,
                   child: FlatButton(
@@ -121,7 +125,8 @@ class LoginScreen extends StatelessWidget {
                       'Criar novo usuário',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      // await Future.delayed(Duration(seconds: 1));
                       Navigator.of(context).push(
                           MaterialPageRoute(builder: (BuildContext context) {
                         return RegisterUserScreen();
@@ -138,7 +143,7 @@ class LoginScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         color: !loginController.utils.loading
-                            ? Colors.green[400]
+                            ? Colors.green
                             : Colors.green[100],
                       ),
                       width: MediaQuery.of(context).size.width,

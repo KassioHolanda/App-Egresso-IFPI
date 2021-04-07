@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egresso_ifpi/domain/model/curso.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'curso_aux.dart';
 part 'utils.g.dart';
 
 class Utils = _UtilsBase with _$Utils;
@@ -39,14 +41,23 @@ abstract class _UtilsBase with Store {
   }
 
   returnAllCourses() async {
+    coursesFinded = List();
     await FirebaseFirestore.instance
-        .collection('cursos')
+        .collection('curso')
         .get()
         .then((QuerySnapshot value) {
       for (QueryDocumentSnapshot document in value.docs) {
         coursesFinded.add(CursoModel.fromDocument(document));
       }
     });
+  }
+
+  Future<List> fetchData() async {
+    List _list = new List();
+    for (CursoModel c in coursesFinded) {
+      _list.add(Curso(c.uid, c.description, c.level));
+    }
+    return _list;
   }
 
   isAdminUser() async {

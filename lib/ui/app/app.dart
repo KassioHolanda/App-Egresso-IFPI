@@ -1,5 +1,6 @@
 import 'package:egresso_ifpi/ui/home/home_screen.dart';
 import 'package:egresso_ifpi/ui/login/login_screen.dart';
+import 'package:egresso_ifpi/ui/login/register_user_screen.dart';
 import 'package:egresso_ifpi/ui/login/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,12 @@ class App extends StatelessWidget {
           primaryColor: Colors.green[800],
           scaffoldBackgroundColor: Colors.grey[100]),
       home: SplashScreen(),
+      // routes: {
+      //   '/': (context) => SplashScreen(),
+      //   '/login': (context) => LoginScreen(),
+      //   '/home': (context) => Home(),
+      //   '/register': (context) => RegisterUserScreen(),
+      // },
     );
   }
 }

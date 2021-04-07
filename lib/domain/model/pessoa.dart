@@ -12,6 +12,8 @@ abstract class _PessoaModelBase with Store {
   @observable
   Timestamp dataNascimento;
   @observable
+  Timestamp dataCadastro;
+  @observable
   String email;
   @observable
   String nome;
@@ -20,6 +22,8 @@ abstract class _PessoaModelBase with Store {
   setCpf(String value) => cpf = value;
   @action
   setDataNascimento(Timestamp value) => dataNascimento = value;
+  @action
+  setDataCadastro(Timestamp value) => dataCadastro = value;
   @action
   setEmail(String value) => email = value;
   @action
@@ -31,6 +35,7 @@ abstract class _PessoaModelBase with Store {
     uid = documentSnapshot.id;
     cpf = documentSnapshot.data()['cpf'];
     dataNascimento = documentSnapshot.data()['data_nascimento'];
+    dataCadastro = documentSnapshot.data()['data_cadastro'];
     email = documentSnapshot.data()['email'];
     nome = documentSnapshot.data()['nome'];
   }
@@ -40,6 +45,7 @@ abstract class _PessoaModelBase with Store {
       // 'uid': uid,
       'cpf': cpf,
       'data_nascimento': dataNascimento,
+      'data_cadastro': dataCadastro,
       'email': email,
       'nome': nome,
     };

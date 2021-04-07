@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egresso_ifpi/controllers/user_controller.dart';
+import 'package:egresso_ifpi/domain/model/aluno.dart';
+import 'package:egresso_ifpi/domain/model/matricula.dart';
+import 'package:egresso_ifpi/domain/model/pessoa.dart';
+import 'package:egresso_ifpi/domain/model/usuario.dart';
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +19,22 @@ abstract class _LoginControllerBase with Store {
   final userController = GetIt.I.get<UserController>();
 
   @observable
+  bool cursoSelect = false;
+
+  @observable
+  Usuario usuario = Usuario();
+  @observable
+  PessoaModel pessoa = PessoaModel();
+  @observable
+  StudentModel student = StudentModel();
+  @observable
+  MatriculaModel matricula = MatriculaModel();
+
+  @observable
   bool loading = false;
+
+  @action
+  setCursoSelect(value) => cursoSelect = value;
 
   @action
   loginComEmail(
@@ -52,8 +72,13 @@ abstract class _LoginControllerBase with Store {
   recoverDataUser() async {}
 
   @action
-  createLogin() async {
-    // authService.createLoginWithMail("kassioleodido@gmail", senha);
+  createLogin(String password, Function nextPage) async {
+    authService.createLoginWithMail(pessoa.email, password).then((value) async {
+      UserCredential usuario = value;
+      saveUser(usuario.user.uid);
+      await userController.recoveryUserFromAuth(usuario.user.uid);
+      nextPage();
+    });
   }
 
   @action
@@ -66,5 +91,56 @@ abstract class _LoginControllerBase with Store {
       return 'Senha incorreta, verifique os dados digitados.';
     }
     return 'Ocorreu um erro inesperado, solicite administrador.';
+  }
+
+  @action
+  save(Function message, Function nextPage, String password) async {
+    try {
+      utils.iniciarLoding();
+      await saveMatricula();
+      await savePerson();
+      await saveStudent();
+      await createLogin(password, nextPage);
+
+      utils.encerrarLoading();
+      message('Cadastro realizado com sucesso');
+    } catch (e) {
+      utils.encerrarLoading();
+      message('Ocorreu um erro, tente novamente');
+    }
+  }
+
+  @action
+  loginStudent() {}
+
+  saveUser(String authId) async {
+    usuario.setAuthUid(authId);
+    await FirebaseFirestore.instance.collection('usuario').add(usuario.toMap());
+  }
+
+  @action
+  saveMatricula() async {
+    matricula.setStatus('em_andamento');
+    await FirebaseFirestore.instance
+        .collection('matricula')
+        .add(matricula.toMap())
+        .then((value) => student.setMatriculaUid(value.id));
+  }
+
+  @action
+  savePerson() async {
+    pessoa.setDataCadastro(Timestamp.now());
+    await FirebaseFirestore.instance
+        .collection('pessoa')
+        .add(pessoa.toMap())
+        .then((value) {
+      student.setPessoaUid(value.id);
+      usuario.setPessoaUid(pessoa.uid);
+    });
+  }
+
+  @action
+  saveStudent() async {
+    await FirebaseFirestore.instance.collection('aluno').add(student.toMap());
   }
 }
