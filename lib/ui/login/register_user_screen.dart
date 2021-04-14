@@ -155,8 +155,7 @@ class RegisterUserScreen extends StatelessWidget {
               SizedBox(height: 10),
               textForm('Matrícula', loginController.matricula.setMatricula),
               SizedBox(height: 10),
-              textForm('Tipo usuário',
-                  loginController.usuario.setTipoUsuario('aluno')),
+              textForm('Tipo usuário', loginController.usuario.setTipoUsuario),
               SizedBox(height: 10),
               Observer(
                 builder: (_) {

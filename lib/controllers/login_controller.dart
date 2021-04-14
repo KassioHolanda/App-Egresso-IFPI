@@ -114,6 +114,7 @@ abstract class _LoginControllerBase with Store {
   loginStudent() {}
 
   saveUser(String authId) async {
+    usuario.setTipoUsuario('aluno');
     usuario.setAuthUid(authId);
     await FirebaseFirestore.instance.collection('usuario').add(usuario.toMap());
   }
