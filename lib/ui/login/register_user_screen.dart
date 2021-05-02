@@ -170,7 +170,7 @@ class RegisterUserScreen extends StatelessWidget {
                     decoration: InputDecoration(
                         helperText:
                             'Solicite com a coordenação caso não tenha conhecimento',
-                        labelText: 'Data inicio curso',
+                        labelText: 'Data início curso',
                         border: OutlineInputBorder()),
                     onTap: () async {
                       final pick = await showDatePicker(

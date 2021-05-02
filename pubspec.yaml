@@ -37,7 +37,7 @@ dependencies:
   flutter_masked_text:
   shared_preferences:
   textfield_search:
-  # textfield_tags:
+  google_fonts:
 
 dev_dependencies:
   flutter_test:

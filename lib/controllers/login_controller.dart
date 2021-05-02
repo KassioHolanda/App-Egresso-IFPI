@@ -124,8 +124,7 @@ abstract class _LoginControllerBase with Store {
     matricula.setStatus('em_andamento');
     await FirebaseFirestore.instance
         .collection('matricula')
-        .add(matricula.toMap())
-        .then((value) => student.setMatriculaUid(value.id));
+        .add(matricula.toMap());
   }
 
   @action
