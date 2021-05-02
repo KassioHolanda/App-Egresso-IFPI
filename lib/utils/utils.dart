@@ -64,4 +64,18 @@ abstract class _UtilsBase with Store {
     final preffs = await SharedPreferences.getInstance();
     return preffs.getBool('admin');
   }
+
+  getStatusStudentMatricula(String status) {
+    if (status == 'em_andamento') {
+      return 'Em andamento';
+    } else if (status == 'concluido') {
+      return 'Concluído';
+    } else if (status == 'cancelado') {
+      return 'Cancelado';
+    } else if (status == 'desistente') {
+      return 'Desistente';
+    } else {
+      return 'Indefinido';
+    }
+  }
 }
