@@ -16,10 +16,14 @@ abstract class _PessoaModelBase with Store {
   @observable
   String email;
   @observable
+  String telefone;
+  @observable
   String nome;
 
   @action
   setCpf(String value) => cpf = value;
+  @action
+  setUid(String value) => uid = value;
   @action
   setDataNascimento(Timestamp value) => dataNascimento = value;
   @action
@@ -28,6 +32,8 @@ abstract class _PessoaModelBase with Store {
   setEmail(String value) => email = value;
   @action
   setNome(String value) => nome = value;
+  @action
+  setTelefone(String value) => telefone = value;
 
   _PessoaModelBase();
 
@@ -37,15 +43,17 @@ abstract class _PessoaModelBase with Store {
     dataNascimento = documentSnapshot.data()['data_nascimento'];
     dataCadastro = documentSnapshot.data()['data_cadastro'];
     email = documentSnapshot.data()['email'];
+    telefone = documentSnapshot.data()['telefone'];
     nome = documentSnapshot.data()['nome'];
   }
 
   Map<String, dynamic> toMap() {
-    return {      
+    return {
       // 'uid': uid,
       'cpf': cpf,
       'data_nascimento': dataNascimento,
       'data_cadastro': dataCadastro,
+      'telefone': telefone,
       'email': email,
       'nome': nome,
     };

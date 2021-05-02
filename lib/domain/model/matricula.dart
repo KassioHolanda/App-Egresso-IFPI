@@ -15,36 +15,47 @@ abstract class _MatriculaModelBase with Store {
   @observable
   Timestamp dataInicio;
   @observable
+  Timestamp dataCadastro;
+  @observable
   String status;
   @observable
   String uid;
-
   @observable
-  CursoModel cursoModel = CursoModel();
+  String alunoUid;
+  @observable
+  CursoModel curso = CursoModel();
 
   _MatriculaModelBase();
 
   _MatriculaModelBase.fromDocument(DocumentSnapshot document) {
     uid = document.id;
-    matricula = document.data()['matricula'];
+    matricula = document.data()['numero_matricula'];
     dataFim = document.data()['data_fim'];
     dataInicio = document.data()['data_inicio'];
-    status = document.data()['status'];
+    dataCadastro = document.data()['data_cadastro'];
+    status = document.data()['status_matricula'];
     cursoUid = document.data()['curso_uid'];
+    alunoUid = document.data()['aluno_uid'];
   }
 
   toMap() {
     return {
       'data_fim': dataFim,
       'data_inicio': dataInicio,
-      'status': status,
-      'matricula': matricula,
+      'data_cadastro': dataCadastro,
+      'status_matricula': status,
+      'numero_matricula': matricula,
       'curso_uid': cursoUid,
+      'aluno_uid': alunoUid,
     };
   }
 
   @action
+  setAlunoUid(String value) => alunoUid = value;
+  @action
   setDataFim(Timestamp value) => dataFim = value;
+  @action
+  setDataCadastro(Timestamp value) => dataCadastro = value;
   @action
   setDataIncicio(Timestamp value) => dataInicio = value;
   @action

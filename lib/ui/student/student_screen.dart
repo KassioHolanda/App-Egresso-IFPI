@@ -1,5 +1,8 @@
+import 'package:egresso_ifpi/controllers/student_controller.dart';
 import 'package:egresso_ifpi/domain/model/aluno.dart';
+import 'package:egresso_ifpi/domain/model/usuario.dart';
 import 'package:egresso_ifpi/ui/config/drawer.dart';
+import 'package:egresso_ifpi/ui/student/cards/student_card.dart';
 import 'package:egresso_ifpi/ui/student/detail_student_screen.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +14,55 @@ class StudentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    showFiltersStudent() {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Status matricula'),
+                  Text('Curso'),
+                  Text('Nome'),
+                  Text('Matricula')
+                ],
+              ),
+              title: Text('Filtrar'),
+            );
+          });
+    }
+
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return DetailStudent();
+          }));
+        },
+      ),
       backgroundColor: Colors.grey[200],
       drawer: DrawerConfig(),
       appBar: AppBar(
         title: Text('Alunos encontrados'),
-        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
+        actions: [
+          IconButton(
+              icon: Icon(Icons.filter_list),
+              onPressed: () {
+                showFiltersStudent();
+              })
+        ],
       ),
       body: Container(
         padding: EdgeInsets.all(10),
-        child: FutureBuilder<QuerySnapshot>(
-          future: FirebaseFirestore.instance.collection('alunos').get(),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('usuario')
+              .where('tipo_usuario', isEqualTo: 'aluno')
+              .snapshots(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -35,71 +76,20 @@ class StudentScreen extends StatelessWidget {
                 final documentos = snapshot.data.docs;
                 if (documentos.length > 0) {
                   return Container(
-                    child: ListView.builder(
-                      itemBuilder: (_, index) {
-                        StudentModel student =
-                            StudentModel.fromDocument(documentos[index]);
-                        return Card(
-                            child: ExpansionTile(
-                          tilePadding: EdgeInsets.only(right: 10),
-                          expandedAlignment: Alignment.topLeft,
-                          childrenPadding:
-                              EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                          children: [
-                            TextFormField(
-                              enabled: false,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                              decoration: InputDecoration(
-                                labelText: 'Status matricula:',
-                                border: InputBorder.none,
-                              ),
-                              controller: TextEditingController(
-                                  text:
-                                      ''),
-                            ),
-                            // TextFormField(
-                            //   enabled: false,
-                            //   decoration: InputDecoration(
-                            //     labelText: 'Data nascimento:',
-                            //   ),
-                            //   controller: TextEditingController(
-                            //       text:
-                            //           '${utils.returnDateDefault(student.dataNascimento)}'),
-                            // ),
-                            // SizedBox(
-                            //   height: 10,
-                            // ),
-                            Container(
-                              width: double.infinity,
-                              child: FlatButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                      return DetailStudent(student);
-                                    }));
-                                  },
-                                  child: Text(
-                                    'Detalhar',
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                            ),
-                          ],
-                          title: ListTile(
-                            leading: CircleAvatar(
-                              child: Icon(Icons.person),
-                            ),
-                            title: Text(
-                              '',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle:
-                                Text(''),
-                          ),
-                        ));
-                      },
-                      itemCount: documentos.length,
+                    child: Column(
+                      children: [
+                        Text('Filtros selecionados'),
+                        SizedBox(height: 10),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (_, index) {
+                            Usuario user =
+                                Usuario.fromDocument(documentos[index]);
+                            return StudentCard(user);
+                          },
+                          itemCount: documentos.length,
+                        )
+                      ],
                     ),
                   );
                 }
