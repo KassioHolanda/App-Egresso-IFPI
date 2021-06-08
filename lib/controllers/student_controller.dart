@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egresso_ifpi/domain/model/aluno.dart';
 import 'package:egresso_ifpi/domain/model/curso.dart';
 import 'package:egresso_ifpi/domain/model/matricula.dart';
+import 'package:egresso_ifpi/domain/model/ocupacao.dart';
 import 'package:egresso_ifpi/domain/model/pessoa.dart';
 import 'package:egresso_ifpi/domain/model/usuario.dart';
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
 import 'package:egresso_ifpi/utils/constantes.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 part 'student_controller.g.dart';
@@ -32,6 +32,13 @@ abstract class _StudentControllerBase with Store {
   StudentModel student = StudentModel();
   @observable
   ObservableList<dynamic> matriculas = ObservableList().asObservable();
+  @observable
+  ObservableList<dynamic> occupations = ObservableList().asObservable();
+
+  String stateFilter;
+  String courseFilter;
+  String matriculaFilter;
+  String nameFilter;
 
   _StudentControllerBase(this.newStudent);
 
@@ -42,6 +49,20 @@ abstract class _StudentControllerBase with Store {
       else
         await saveNewMatricula(matricula);
     }
+  }
+
+  saveOccupations() async {
+    for (Ocupacao ocupacao in occupations) {
+      if (ocupacao.uid == null) {
+        await saveNewOccupation(ocupacao);
+      }
+    }
+  }
+
+  saveNewOccupation(Ocupacao occupation) async {
+    await FirebaseFirestore.instance
+        .collection('ocupacao')
+        .add(occupation.toMap());
   }
 
   saveNewMatricula(MatriculaModel m) async {
@@ -115,6 +136,7 @@ abstract class _StudentControllerBase with Store {
   }
 
   updatePerson() async {
+    person.setCpf(person.cpf.replaceAll('.', '').replaceAll('-', ''));
     await FirebaseFirestore.instance
         .collection('pessoa')
         .doc(person.uid)
@@ -123,6 +145,7 @@ abstract class _StudentControllerBase with Store {
 
   savePerson() async {
     person.setDataCadastro(Timestamp.now());
+    person.setCpf(person.cpf.replaceAll('.', '').replaceAll('-', ''));
     await FirebaseFirestore.instance
         .collection('pessoa')
         .add(person.toMap())
@@ -142,26 +165,28 @@ abstract class _StudentControllerBase with Store {
     try {
       utilsController.iniciarLoding();
 
-      if (!await isValidCPF()) {
-        mensagem('CPF já se encontra cadastrado.');
-      } else if (!await isValidMail()) {
-        mensagem('EMAIL já se encontra cadastrado.');
+      if (student.uid != null) {
+        await updateStudent();
+        await updatePerson();
       } else {
-        if (student.uid != null) {
-          await updateStudent();
-          await updatePerson();
+        if (!await isValidCPF()) {
+          mensagem('CPF já se encontra cadastrado.');
+        } else if (!await isValidMail()) {
+          mensagem('EMAIL já se encontra cadastrado.');
         } else {
           await savePerson();
           await saveUser();
           await saveStudent();
         }
-
-        await saveMatriculas();
-
-        utilsController.encerrarLoading();
-        mensagem(Constantes.messageSuccess);
-        fecharPagina();
       }
+
+      await saveMatriculas();
+      await saveOccupations();
+
+      utilsController.encerrarLoading();
+      mensagem(Constantes.messageSuccess);
+      fecharPagina();
+
       utilsController.encerrarLoading();
     } catch (e) {
       utilsController.encerrarLoading();
@@ -174,6 +199,10 @@ abstract class _StudentControllerBase with Store {
     matricula.setStatus('em_andamento');
     await getCurso(matricula);
     matriculas.add(matricula);
+  }
+
+  addOccupations(Ocupacao occupation) async {
+    occupations.add(occupation);
   }
 
   getCurso(MatriculaModel matricula) async {
@@ -202,6 +231,22 @@ abstract class _StudentControllerBase with Store {
     });
   }
 
+  getOccuptions() async {
+    for (MatriculaModel m in matriculas) {
+      await FirebaseFirestore.instance
+          .collection('ocupacao')
+          .where('matricula_uid', isEqualTo: m.uid)
+          .get()
+          .then((value) {
+        if (value != null) {
+          for (DocumentSnapshot doc in value.docs) {
+            occupations.add(Ocupacao.fromDocumento(doc));
+          }
+        }
+      });
+    }
+  }
+
   isMatriculaInProgress() {
     for (MatriculaModel m in matriculas) {
       if (m.status == 'em_andamento') {
@@ -212,9 +257,12 @@ abstract class _StudentControllerBase with Store {
   }
 
   getDataStudent(String personUid) async {
+    loading = true;
     await getPerson(personUid);
     await getStudent();
     await getMatriculas();
+    await getOccuptions();
+    loading = false;
   }
 
   getPerson(personUid) async {

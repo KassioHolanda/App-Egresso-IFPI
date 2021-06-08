@@ -3,6 +3,7 @@ import 'package:egresso_ifpi/controllers/login_controller.dart';
 import 'package:egresso_ifpi/controllers/student_controller.dart';
 import 'package:egresso_ifpi/domain/model/aluno.dart';
 import 'package:egresso_ifpi/domain/model/matricula.dart';
+import 'package:egresso_ifpi/domain/model/ocupacao.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,21 @@ class DetailStudent extends StatelessWidget {
       Navigator.pop(context);
     }
 
+    List<DropdownMenuItem<String>> matriculas() {
+      List<DropdownMenuItem<String>> itens = List();
+
+      for (MatriculaModel m in studentController.matriculas) {
+        itens.add(DropdownMenuItem(
+          value: m.uid,
+          child: Text(
+            m.matricula.toUpperCase(),
+            style: TextStyle(color: Colors.black),
+          ),
+        ));
+      }
+      return itens;
+    }
+
     Widget formLabel(String title, TextEditingController controller,
         Function onChanged, Function validade, bool readOnly) {
       return TextFormField(
@@ -88,109 +104,351 @@ class DetailStudent extends StatelessWidget {
 
             bool isCourse = false;
 
-            return AlertDialog(
-              title: Text('Adicionar matricula'),
-              content: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      onChanged: matriculaModel.setMatricula,
-                      decoration: InputDecoration(
-                          labelText: 'Número matricula',
-                          border: OutlineInputBorder()),
-                      validator: (text) {
-                        if (text.isEmpty) {
-                          return 'Esse campo não pode ficar em branco.';
-                        } else if (!studentController.isValidMatricula(text)) {
-                          return 'Matricula já cadastrada para esse aluno.';
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Observer(
-                      builder: (_) {
-                        return TextFormField(
-                          readOnly: true,
-                          validator: (text) =>
-                              text.isEmpty ? 'Campo obrigatório' : null,
-                          controller: TextEditingController(
-                              text: matriculaModel.dataInicio == null
-                                  ? ''
-                                  : ' ${studentController.utilsController.returnDateDefault(matriculaModel.dataInicio)}'),
-                          decoration: InputDecoration(
-                              labelText: 'Data início',
-                              border: OutlineInputBorder()),
-                          onTap: () async {
-                            final pick = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime.now());
-                            if (pick != null) {
-                              matriculaModel
-                                  .setDataIncicio(Timestamp.fromDate(pick));
-                            }
-                          },
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    FutureBuilder(
-                      future:
-                          studentController.utilsController.returnAllCourses(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.none:
-                          case ConnectionState.waiting:
-                            return Container();
-                          default:
-                            return TextFieldSearch(
-                                getSelectedValue: (value) {
-                                  value != null
-                                      ? isCourse = true
-                                      : isCourse = false;
-                                  matriculaModel.setCursoUid(
-                                      value != null ? value.uid : null);
-                                },
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Curso'),
-                                future: () => studentController.utilsController
-                                    .fetchData(),
-                                label: 'Curso',
-                                controller: cursoController);
-                        }
-                      },
-                    ),
-                  ],
+            return Dialog(
+              // title:
+              child: Container(
+                padding: EdgeInsets.all(20),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Adicionar Matrícula',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        onChanged: matriculaModel.setMatricula,
+                        decoration: InputDecoration(
+                            labelText: 'Número matricula',
+                            border: OutlineInputBorder()),
+                        validator: (text) {
+                          if (text.isEmpty) {
+                            return 'Esse campo não pode ficar em branco.';
+                          } else if (!studentController
+                              .isValidMatricula(text)) {
+                            return 'Matricula já cadastrada para esse aluno.';
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Observer(
+                        builder: (_) {
+                          return TextFormField(
+                            readOnly: true,
+                            validator: (text) =>
+                                text.isEmpty ? 'Campo obrigatório' : null,
+                            controller: TextEditingController(
+                                text: matriculaModel.dataInicio == null
+                                    ? ''
+                                    : ' ${studentController.utilsController.returnDateDefault(matriculaModel.dataInicio)}'),
+                            decoration: InputDecoration(
+                                labelText: 'Data início',
+                                border: OutlineInputBorder()),
+                            onTap: () async {
+                              final pick = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now());
+                              if (pick != null) {
+                                matriculaModel
+                                    .setDataIncicio(Timestamp.fromDate(pick));
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      FutureBuilder(
+                        future: studentController.utilsController
+                            .returnAllCourses(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<dynamic> snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                            case ConnectionState.waiting:
+                              return Container();
+                            default:
+                              return TextFieldSearch(
+                                  getSelectedValue: (value) {
+                                    value != null
+                                        ? isCourse = true
+                                        : isCourse = false;
+                                    matriculaModel.setCursoUid(
+                                        value != null ? value.uid : null);
+                                  },
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Curso'),
+                                  future: () => studentController
+                                      .utilsController
+                                      .fetchData(),
+                                  label: 'Curso',
+                                  controller: cursoController);
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FlatButton(
+                            onPressed: () async {
+                              if (formKey.currentState.validate()) {
+                                await studentController
+                                    .addMatriculaStudent(matriculaModel);
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: Text(
+                              'Salvar',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                          // SizedBox(
+                          //   width: 10,
+                          // ),
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Cancelar',
+                                style: TextStyle(color: Colors.red),
+                              ))
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              actions: [
-                FlatButton(
-                    onPressed: () async {
-                      if (formKey.currentState.validate()) {
-                        await studentController
-                            .addMatriculaStudent(matriculaModel);
+              // actions: [
+
+              // ],
+            );
+          });
+    }
+
+    addOccupations() {
+      showDialog(
+          context: context,
+          builder: (_) {
+            final formKey = GlobalKey<FormState>();
+            Ocupacao ocupacao = Ocupacao();
+
+            return Dialog(
+              // title:
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(20),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Adicionar Ocupação',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        onChanged: ocupacao.setLocal,
+                        decoration: InputDecoration(
+                            labelText: 'Local', border: OutlineInputBorder()),
+                        validator: (text) {
+                          if (text.isEmpty) {
+                            return 'Esse campo não pode ficar em branco.';
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Observer(
+                        builder: (_) {
+                          return TextFormField(
+                            readOnly: true,
+                            validator: (text) =>
+                                text.isEmpty ? 'Campo obrigatório' : null,
+                            controller: TextEditingController(
+                                text: ocupacao.startAt == null
+                                    ? ''
+                                    : ' ${studentController.utilsController.returnDateDefault(ocupacao.startAt)}'),
+                            decoration: InputDecoration(
+                                labelText: 'Data de início',
+                                border: OutlineInputBorder()),
+                            onTap: () async {
+                              final pick = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(5000));
+                              if (pick != null) {
+                                ocupacao.setStartAt(Timestamp.fromDate(pick));
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Observer(
+                        builder: (_) {
+                          return TextFormField(
+                            readOnly: true,
+                            validator: (text) =>
+                                text.isEmpty ? 'Campo obrigatório' : null,
+                            controller: TextEditingController(
+                                text: ocupacao.endAt == null
+                                    ? ''
+                                    : ' ${studentController.utilsController.returnDateDefault(ocupacao.endAt)}'),
+                            decoration: InputDecoration(
+                                labelText: 'Data de encerramento',
+                                border: OutlineInputBorder()),
+                            onTap: () async {
+                              final pick = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(5000));
+                              if (pick != null) {
+                                ocupacao.setEndAt(Timestamp.fromDate(pick));
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Observer(
+                        builder: (_) {
+                          return Row(
+                            children: [
+                              Switch(
+                                  value: ocupacao.isPaid,
+                                  onChanged: ocupacao.setPaid),
+                              Text('É Remunerado?  ')
+                            ],
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      DropdownButtonFormField<String>(
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                          ),
+                          elevation: 2,
+                          validator: (text) {
+                            if (text == null) {
+                              return 'Matricula obrigatória';
+                            }
+                          },
+                          value: ocupacao.registrationUid,
+                          isExpanded: true,
+                          items: matriculas(),
+                          decoration: InputDecoration(
+                              // prefixIcon: Icon(Icons.credit_card),
+                              border: OutlineInputBorder(),
+                              labelText: 'Matricula'),
+                          onChanged: ocupacao.setRegistration),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: Colors.green,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: FlatButton(
+                          onPressed: () async {
+                            if (formKey.currentState.validate()) {
+                              await studentController.addOccupations(ocupacao);
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: Text(
+                            'Salvar',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: Colors.red,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: FlatButton(
+                            color: Colors.red,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              // actions: [
+
+              // ],
+            );
+          });
+    }
+
+    showOptions() {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return Dialog(
+              // title: Text('Adicionar'),
+              // padding: EdgeInsets.all(10),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: () {
                         Navigator.pop(context);
-                      }
-                    },
-                    child: Text('Salvar')),
-                FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Cancelar',
-                      style: TextStyle(color: Colors.red),
-                    ))
-              ],
+                        addMatricula();
+                      },
+                      title: Text('Matrícula'),
+                      trailing: Icon(Icons.chevron_right),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        addOccupations();
+                      },
+                      title: Text('Ocupação'),
+                      trailing: Icon(Icons.chevron_right),
+                    ),
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              ),
             );
           });
     }
@@ -214,7 +472,7 @@ class DetailStudent extends StatelessWidget {
             padding: EdgeInsets.only(right: 8),
             child: IconButton(
               onPressed: () {
-                addMatricula();
+                showOptions();
               },
               icon: Icon(
                 Icons.add,
@@ -402,9 +660,9 @@ class DetailStudent extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: ExpansionTile(
-                                initiallyExpanded: studentController
-                                        .matriculas[index].status ==
-                                    'em_andamento',
+                                // initiallyExpanded: studentController
+                                //         .matriculas[index].status ==
+                                //     'em_andamento',
                                 childrenPadding: EdgeInsets.all(10),
                                 title: ListTile(
                                   title: Text(
@@ -496,6 +754,67 @@ class DetailStudent extends StatelessWidget {
                           },
                           itemCount: studentController.matriculas.length,
                           shrinkWrap: true,
+                        );
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Divider(),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 26),
+                    child: Text(
+                      'OCUPAÇÕES',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Observer(
+                builder: (_) {
+                  return studentController.occupations.length == 0
+                      ? Container(
+                          child: Text(
+                            'Nenhuma ocupação cadastrada.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            Ocupacao ocupacao =
+                                studentController.occupations[index];
+                            return Container(
+                              child: Card(
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: Colors.grey[200], width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ListTile(
+                                  title: Text('${ocupacao.local}'),
+                                  subtitle: Text(
+                                      'Data início ${ocupacao.startAt != null ? studentController.utilsController.returnDateDefault(ocupacao.startAt) : 'Não informado'}, Data fim ${ocupacao.endAt != null ? studentController.utilsController.returnDateDefault(ocupacao.endAt) : 'Não informado'}'),
+                                ),
+                              ),
+                            );
+                          },
+                          itemCount: studentController.occupations.length,
                         );
                 },
               ),

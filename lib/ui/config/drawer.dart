@@ -36,11 +36,12 @@ class DrawerConfig extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    Text('Nome usuário'),
+                    Text('${loginController.userController.pessoa.nome}'),
                     SizedBox(
                       height: 4,
                     ),
-                    Text('Perfil'),
+                    Text(
+                        '${loginController.userController.user.tipoUsuario.toUpperCase()}'),
                   ],
                 ),
                 decoration: BoxDecoration(
@@ -71,30 +72,58 @@ class DrawerConfig extends StatelessWidget {
                   }));
                 },
               ),
-              ListTile(
-                selectedTileColor: Colors.green[400],
-                selected: drawerController.numPage == 1,
-                leading: Icon(
-                  Icons.group,
-                  color: drawerController.numPage == 1
-                      ? Colors.white
-                      : Colors.grey,
-                ),
-                title: Text(
-                  'Alunos',
-                  style: TextStyle(
-                      color: drawerController.numPage == 1
-                          ? Colors.white
-                          : Colors.black),
-                ),
-                onTap: () {
-                  drawerController.setNumPage(1);
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return StudentScreen();
-                  }));
-                },
-              ),
+              loginController.userController.user.tipoUsuario != 'aluno'
+                  ? ListTile(
+                      selectedTileColor: Colors.green[400],
+                      selected: drawerController.numPage == 1,
+                      leading: Icon(
+                        Icons.group,
+                        color: drawerController.numPage == 1
+                            ? Colors.white
+                            : Colors.grey,
+                      ),
+                      title: Text(
+                        'Alunos',
+                        style: TextStyle(
+                            color: drawerController.numPage == 1
+                                ? Colors.white
+                                : Colors.black),
+                      ),
+                      onTap: () {
+                        drawerController.setNumPage(1);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return StudentScreen();
+                        }));
+                      },
+                    )
+                  : Container(),
+              loginController.userController.user.tipoUsuario == 'aluno'
+                  ? ListTile(
+                      selectedTileColor: Colors.green[400],
+                      selected: drawerController.numPage == 1,
+                      leading: Icon(
+                        Icons.group,
+                        color: drawerController.numPage == 1
+                            ? Colors.white
+                            : Colors.grey,
+                      ),
+                      title: Text(
+                        'Meus dados',
+                        style: TextStyle(
+                            color: drawerController.numPage == 1
+                                ? Colors.white
+                                : Colors.black),
+                      ),
+                      onTap: () {
+                        drawerController.setNumPage(1);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return StudentScreen();
+                        }));
+                      },
+                    )
+                  : Container(),
               ListTile(
                 selectedTileColor: Colors.green[400],
                 selected: drawerController.numPage == 2,

@@ -12,7 +12,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Colors.green[800],
-          textTheme: GoogleFonts.sansitaTextTheme(Theme.of(context).textTheme),
+          // textTheme: GoogleFonts.abelTextTheme(Theme.of(context).textTheme),
           primaryTextTheme: TextTheme(),
           scaffoldBackgroundColor: Colors.grey[100]),
       home: SplashScreen(),
