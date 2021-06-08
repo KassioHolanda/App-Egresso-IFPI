@@ -27,9 +27,15 @@ abstract class _ManageUserControllerBase with Store {
   @observable
   FuncionarioModel funcionario = FuncionarioModel();
   @observable
-  List<CursoFuncionarioModel> coursesEmployee = List();
+  List<dynamic> coursesEmployee = ObservableList().asObservable();
   @observable
   CursoFuncionarioModel cursoFuncionarioModel = CursoFuncionarioModel();
+
+  @observable
+  bool cursoSelect = false;
+
+  @action
+  setCursoSelect(value) => cursoSelect = value;
 
   @action
   manageCourseUser(CursoModel course) {
@@ -115,6 +121,7 @@ abstract class _ManageUserControllerBase with Store {
 
   @action
   savePerson() async {
+    pessoa.setCpf(pessoa.cpf.replaceAll('-', '').replaceAll('.', ''));
     await FirebaseFirestore.instance
         .collection('pessoa')
         .add(pessoa.toMap())
@@ -212,6 +219,11 @@ abstract class _ManageUserControllerBase with Store {
       if (value.docs.length > 0)
         funcionario = FuncionarioModel.fromDocument(value.docs[0]);
     });
+  }
+
+  addCursoAoFuncionario(CursoFuncionarioModel cursoFuncionarioModel) {
+    coursesSelect.add(cursoFuncionarioModel.cursoModel);
+    coursesEmployee.add(cursoFuncionarioModel);
   }
 
   // recoveryCourses(documentSnapshot) {

@@ -12,16 +12,16 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (BuildContext context) {
-            return AddUserScreen();
-          }));
-        },
-        child: Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.red,
+      //   onPressed: () {
+      //     Navigator.of(context)
+      //         .push(MaterialPageRoute(builder: (BuildContext context) {
+      //       return AddUserScreen();
+      //     }));
+      //   },
+      //   child: Icon(Icons.add),
+      // ),
       backgroundColor: Colors.grey[200],
       drawer: DrawerConfig(),
       appBar: AppBar(

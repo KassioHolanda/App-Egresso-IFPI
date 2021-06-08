@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:egresso_ifpi/controllers/manage_user_controller.dart';
 import 'package:egresso_ifpi/domain/model/curso.dart';
+import 'package:egresso_ifpi/domain/model/curso_funcionario.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -9,6 +10,7 @@ import 'package:get_it/get_it.dart';
 class AddCoursesUser extends StatelessWidget {
   final ManageUserController manageUserController;
   final utilsController = GetIt.I.get<Utils>();
+
   AddCoursesUser(this.manageUserController);
 
   @override
@@ -33,10 +35,28 @@ class AddCoursesUser extends StatelessWidget {
       return itens;
     }
 
+    List<DropdownMenuItem<CursoModel>> cursos() {
+      List<DropdownMenuItem<CursoModel>> itens = List();
+
+      for (CursoModel c in utilsController.coursesFinded) {
+        itens.add(DropdownMenuItem(
+          value: c,
+          child: Text(
+            c.description,
+            style: TextStyle(color: Colors.black),
+          ),
+        ));
+      }
+      return itens;
+    }
+
     showSelectOfficeAnCourse() {
       showDialog(
           context: context,
           builder: (_) {
+            CursoFuncionarioModel cursoFuncionarioModel =
+                CursoFuncionarioModel();
+
             return AlertDialog(
               actions: [
                 FlatButton(
@@ -48,7 +68,11 @@ class AddCoursesUser extends StatelessWidget {
                       style: TextStyle(color: Colors.red),
                     )),
                 FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      manageUserController
+                          .addCursoAoFuncionario(cursoFuncionarioModel);
+                      Navigator.pop(context);
+                    },
                     child: Text(
                       'Adicionar',
                     )),
@@ -66,36 +90,48 @@ class AddCoursesUser extends StatelessWidget {
                           return 'Cargo obrigatório';
                         }
                       },
-                      value: manageUserController.usuario.tipoUsuario,
+                      value: cursoFuncionarioModel.cargo,
                       isExpanded: true,
                       items: tipoCargo(),
                       decoration: InputDecoration(
                           // prefixIcon: Icon(Icons.credit_card),
                           border: OutlineInputBorder(),
                           labelText: 'Cargo'),
-                      onChanged:
-                          manageUserController.cursoFuncionarioModel.setCargo),
+                      onChanged: cursoFuncionarioModel.setCargo),
                   SizedBox(
                     height: 10,
                   ),
                   FutureBuilder(
                     future: utilsController.returnAllCourses(),
-                    builder: (context, snapshot) {
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
                       switch (snapshot.connectionState) {
                         case ConnectionState.none:
                         case ConnectionState.waiting:
                           return Center(
-                            child: Container(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
+                              // child: Container(
+                              //   child: CircularProgressIndicator(),
+                              // ),
+                              );
                         default:
-                          return TextFormField(
-                            decoration: InputDecoration(
-                                labelText: 'Curso',
-                                suffixIcon: Icon(Icons.search),
-                                border: OutlineInputBorder()),
-                          );
+                          return DropdownButtonFormField<CursoModel>(
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                              ),
+                              elevation: 2,
+                              validator: (text) {
+                                if (text == null) {
+                                  return 'Matricula obrigatória';
+                                }
+                              },
+                              value: cursoFuncionarioModel.cursoModel,
+                              isExpanded: true,
+                              items: cursos(),
+                              decoration: InputDecoration(
+                                  // prefixIcon: Icon(Icons.credit_card),
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Matricula'),
+                              onChanged: cursoFuncionarioModel.setCurso);
                       }
                     },
                   ),
@@ -130,6 +166,7 @@ class AddCoursesUser extends StatelessWidget {
                           itemBuilder: (_, index) {
                             return Container(
                               child: ListTile(
+                                leading: Text('${index + 1}'),
                                 title: Text(
                                     '${manageUserController.coursesEmployee[index].cursoModel.description}'),
                                 subtitle: Text(
@@ -156,10 +193,12 @@ class AddCoursesUser extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               child: FlatButton(
                 child: Text(
-                  'Continuar',
+                  'Confirmar',
                   style: TextStyle(color: Colors.white),
                 ),
-                onPressed: () async {},
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
               ),
             ),
           ],

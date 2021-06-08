@@ -54,8 +54,6 @@ class AddUserScreen extends StatelessWidget {
       return itens;
     }
 
-    
-
     Widget formRegisterText(
         String label, TextEditingController controller, Function onChanged) {
       return Padding(
@@ -143,7 +141,7 @@ class AddUserScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              
+
               Divider(),
               Observer(
                 builder: (_) {
@@ -177,7 +175,7 @@ class AddUserScreen extends StatelessWidget {
                   child: Observer(
                     builder: (_) {
                       return Text(
-                          '${manageUserController.coursesSelect.length}');
+                          '${manageUserController.coursesEmployee.length}');
                     },
                   ),
                 ),
@@ -195,7 +193,7 @@ class AddUserScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
-                    if (manageUserController.coursesSelect.length <= 0 &&
+                    if (manageUserController.coursesEmployee.length <= 0 &&
                         manageUserController.usuario.tipoUsuario ==
                             'funcionario') {
                       showMessage('Nenhum curso selecionado.');
