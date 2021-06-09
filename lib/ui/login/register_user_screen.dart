@@ -157,6 +157,7 @@ class RegisterUserScreen extends StatelessWidget {
               SizedBox(height: 10),
               textForm('Tipo usuário', loginController.usuario.setTipoUsuario),
               SizedBox(height: 10),
+
               Observer(
                 builder: (_) {
                   return TextFormField(
@@ -186,6 +187,18 @@ class RegisterUserScreen extends StatelessWidget {
                   );
                 },
               ),
+              SizedBox(height: 10),
+              TextFormField(
+                validator: (text) {
+                  if (text.length < 6) {
+                    return 'Senha mínima com 6 dígitos.';
+                  }
+                },
+                onChanged: loginController.setSenha,
+                obscureText: true,
+                decoration: InputDecoration(
+                    labelText: 'Senha', border: OutlineInputBorder()),
+              ),
 
               SizedBox(height: 30),
               Row(
@@ -205,8 +218,7 @@ class RegisterUserScreen extends StatelessWidget {
                         onPressed: () async {
                           if (_formKey.currentState.validate() &&
                               loginController.cursoSelect) {
-                            await loginController.save(
-                                message, nextPage, '123456');
+                            await loginController.save(message, nextPage);
                           }
                         },
                       ),

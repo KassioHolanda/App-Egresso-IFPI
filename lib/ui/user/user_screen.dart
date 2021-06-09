@@ -26,7 +26,7 @@ class UserScreen extends StatelessWidget {
       drawer: DrawerConfig(),
       appBar: AppBar(
         title: Text('Usuários cadastrados'),
-        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
+        // actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
       ),
       body: Container(
           padding: EdgeInsets.all(10),

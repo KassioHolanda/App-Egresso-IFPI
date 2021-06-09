@@ -9,6 +9,21 @@ part of 'login_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$LoginController on _LoginControllerBase, Store {
+  final _$senhaAtom = Atom(name: '_LoginControllerBase.senha');
+
+  @override
+  String get senha {
+    _$senhaAtom.reportRead();
+    return super.senha;
+  }
+
+  @override
+  set senha(String value) {
+    _$senhaAtom.reportWrite(value, super.senha, () {
+      super.senha = value;
+    });
+  }
+
   final _$cursoSelectAtom = Atom(name: '_LoginControllerBase.cursoSelect');
 
   @override
@@ -138,8 +153,8 @@ mixin _$LoginController on _LoginControllerBase, Store {
   final _$saveAsyncAction = AsyncAction('_LoginControllerBase.save');
 
   @override
-  Future save(Function message, Function nextPage, String password) {
-    return _$saveAsyncAction.run(() => super.save(message, nextPage, password));
+  Future save(Function message, Function nextPage) {
+    return _$saveAsyncAction.run(() => super.save(message, nextPage));
   }
 
   final _$saveMatriculaAsyncAction =
@@ -168,6 +183,17 @@ mixin _$LoginController on _LoginControllerBase, Store {
 
   final _$_LoginControllerBaseActionController =
       ActionController(name: '_LoginControllerBase');
+
+  @override
+  dynamic setSenha(dynamic value) {
+    final _$actionInfo = _$_LoginControllerBaseActionController.startAction(
+        name: '_LoginControllerBase.setSenha');
+    try {
+      return super.setSenha(value);
+    } finally {
+      _$_LoginControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic setCursoSelect(dynamic value) {
@@ -205,6 +231,7 @@ mixin _$LoginController on _LoginControllerBase, Store {
   @override
   String toString() {
     return '''
+senha: ${senha},
 cursoSelect: ${cursoSelect},
 usuario: ${usuario},
 pessoa: ${pessoa},

@@ -20,6 +20,9 @@ abstract class _LoginControllerBase with Store {
   final userController = GetIt.I.get<UserController>();
 
   @observable
+  String senha = '';
+
+  @observable
   bool cursoSelect = false;
 
   @observable
@@ -33,6 +36,9 @@ abstract class _LoginControllerBase with Store {
 
   @observable
   bool loading = false;
+
+  @action
+  setSenha(value) => senha = value;
 
   @action
   setCursoSelect(value) => cursoSelect = value;
@@ -86,7 +92,6 @@ abstract class _LoginControllerBase with Store {
   Future recuperarSenhaUsuario(String email) async {
     await authService.recuperarSenha(email);
   }
-
 
   @action
   loginComEmail(
@@ -145,13 +150,13 @@ abstract class _LoginControllerBase with Store {
   }
 
   @action
-  save(Function message, Function nextPage, String password) async {
+  save(Function message, Function nextPage) async {
     try {
       utils.iniciarLoding();
       await saveMatricula();
       await savePerson();
       await saveStudent();
-      await createLogin(password, nextPage);
+      await createLogin(senha, nextPage);
 
       utils.encerrarLoading();
       message('Cadastro realizado com sucesso');

@@ -70,14 +70,14 @@ class StudentScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Alunos encontrados'),
         actions: [
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showFiltersStudent();
-              })
+          // IconButton(
+          //     icon: Icon(Icons.search),
+          //     onPressed: () {
+          //       showFiltersStudent();
+          //     })
         ],
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
