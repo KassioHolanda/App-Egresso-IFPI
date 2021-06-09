@@ -32,6 +32,73 @@ class LoginScreen extends StatelessWidget {
       }));
     }
 
+    _dialogEsqueciSenha() {
+      showDialog(
+          context: context,
+          builder: (_) {
+            final emailController = TextEditingController();
+            final formKey = GlobalKey<FormState>();
+
+            return AlertDialog(
+              title: Text(
+                'Esqueci minha senha',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              content: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.info),
+                      title: Text('Informe seu Email para recuperar sua senha'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                        validator: (text) {
+                          if (text.isEmpty || text.length == 0) {
+                            return 'Email obrigatório';
+                          }
+                        },
+                        controller: emailController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Email',
+                            hintText:
+                                'Informe seu email para recuperar sua senha')),
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              ),
+              actions: [
+                FlatButton(
+                  color: Colors.blue,
+                  onPressed: () async {
+                    if (formKey.currentState.validate()) {
+                      await loginController
+                          .recuperarSenhaUsuario(emailController.text);
+
+                      message('Link de alteração foi enviado ao seu email.');
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child:
+                      Text('Recuperar', style: TextStyle(color: Colors.white)),
+                ),
+                FlatButton(
+                  color: Colors.red,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child:
+                      Text('Cancelar', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            );
+          });
+    }
+
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -103,7 +170,9 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                       FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _dialogEsqueciSenha();
+                          },
                           child: Text(
                             'Esqueci minha senha',
                             style: TextStyle(fontWeight: FontWeight.bold),

@@ -3,6 +3,7 @@ import 'package:egresso_ifpi/controllers/login_controller.dart';
 import 'package:egresso_ifpi/ui/home/home_screen.dart';
 import 'package:egresso_ifpi/ui/login/login_screen.dart';
 import 'package:egresso_ifpi/ui/settings/settings_screen.dart';
+import 'package:egresso_ifpi/ui/student/detail_student_screen.dart';
 import 'package:egresso_ifpi/ui/student/student_screen.dart';
 import 'package:egresso_ifpi/ui/user/user_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,35 @@ class DrawerConfig extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    confirmExit() {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: Text('Deseja sair do app?'),
+              actions: [
+                FlatButton(
+                    onPressed: () {
+                      loginController.logoutUser();
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return LoginScreen();
+                      }));
+                    },
+                    child: Text(
+                      'Sim',
+                      style: TextStyle(color: Colors.red),
+                    )),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Não'))
+              ],
+            );
+          });
+    }
+
     return Drawer(
       child: Observer(
         builder: (_) {
@@ -119,59 +149,65 @@ class DrawerConfig extends StatelessWidget {
                         drawerController.setNumPage(1);
                         Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (BuildContext context) {
-                          return StudentScreen();
+                          return DetailStudent(
+                            alunoLogado: true,
+                          );
                         }));
                       },
                     )
                   : Container(),
-              ListTile(
-                selectedTileColor: Colors.green[400],
-                selected: drawerController.numPage == 2,
-                leading: Icon(
-                  Icons.supervised_user_circle_rounded,
-                  color: drawerController.numPage == 2
-                      ? Colors.white
-                      : Colors.grey,
-                ),
-                title: Text(
-                  'Usuários',
-                  style: TextStyle(
-                      color: drawerController.numPage == 2
-                          ? Colors.white
-                          : Colors.black),
-                ),
-                onTap: () {
-                  drawerController.setNumPage(2);
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return UserScreen();
-                  }));
-                },
-              ),
-              ListTile(
-                selectedTileColor: Colors.green[400],
-                selected: drawerController.numPage == 3,
-                title: Text(
-                  'Configurações',
-                  style: TextStyle(
-                      color: drawerController.numPage == 3
-                          ? Colors.white
-                          : Colors.black),
-                ),
-                onTap: () {
-                  drawerController.setNumPage(3);
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return SettingsScreen();
-                  }));
-                },
-                leading: Icon(
-                  Icons.settings,
-                  color: drawerController.numPage == 3
-                      ? Colors.white
-                      : Colors.grey,
-                ),
-              ),
+              loginController.userController.user.tipoUsuario != 'aluno'
+                  ? ListTile(
+                      selectedTileColor: Colors.green[400],
+                      selected: drawerController.numPage == 2,
+                      leading: Icon(
+                        Icons.supervised_user_circle_rounded,
+                        color: drawerController.numPage == 2
+                            ? Colors.white
+                            : Colors.grey,
+                      ),
+                      title: Text(
+                        'Usuários',
+                        style: TextStyle(
+                            color: drawerController.numPage == 2
+                                ? Colors.white
+                                : Colors.black),
+                      ),
+                      onTap: () {
+                        drawerController.setNumPage(2);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return UserScreen();
+                        }));
+                      },
+                    )
+                  : Container(),
+              loginController.userController.user.tipoUsuario != 'aluno'
+                  ? ListTile(
+                      selectedTileColor: Colors.green[400],
+                      selected: drawerController.numPage == 3,
+                      title: Text(
+                        'Configurações',
+                        style: TextStyle(
+                            color: drawerController.numPage == 3
+                                ? Colors.white
+                                : Colors.black),
+                      ),
+                      onTap: () {
+                        drawerController.setNumPage(3);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return SettingsScreen();
+                        }));
+                      },
+                      leading: Icon(
+                        Icons.settings,
+                        color: drawerController.numPage == 3
+                            ? Colors.white
+                            : Colors.grey,
+                      ),
+                    )
+                  : Container(),
               ListTile(
                 leading: Icon(
                   Icons.exit_to_app,
@@ -182,11 +218,7 @@ class DrawerConfig extends StatelessWidget {
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
-                  loginController.logoutUser();
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return LoginScreen();
-                  }));
+                  confirmExit();
                 },
               ),
             ],

@@ -8,6 +8,7 @@ import 'package:egresso_ifpi/domain/model/usuario.dart';
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
 import 'package:egresso_ifpi/utils/constantes.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 part 'student_controller.g.dart';
@@ -20,6 +21,8 @@ abstract class _StudentControllerBase with Store {
 
   @observable
   bool loading = false;
+  @observable
+  bool loadingStudent = false;
 
   @observable
   bool newStudent;
@@ -120,6 +123,19 @@ abstract class _StudentControllerBase with Store {
     return true;
   }
 
+  @action
+  createLogin() async {
+    authService
+        .createLoginWithMail(person.email, 'ifpi123')
+        .then((value) async {
+      UserCredential usuario = value;
+      user.setAuthUid(usuario.user.uid);
+      // saveUser(usuario.user.uid);
+      // await userController.recoveryUserFromAuth(usuario.user.uid);
+      // nextPage();
+    });
+  }
+
   saveStudent() async {
     student.setDataCadastro(Timestamp.now());
     await FirebaseFirestore.instance
@@ -175,6 +191,7 @@ abstract class _StudentControllerBase with Store {
           mensagem('EMAIL já se encontra cadastrado.');
         } else {
           await savePerson();
+          await createLogin();
           await saveUser();
           await saveStudent();
         }
@@ -257,12 +274,12 @@ abstract class _StudentControllerBase with Store {
   }
 
   getDataStudent(String personUid) async {
-    loading = true;
+    loadingStudent = true;
     await getPerson(personUid);
     await getStudent();
     await getMatriculas();
     await getOccuptions();
-    loading = false;
+    loadingStudent = false;
   }
 
   getPerson(personUid) async {

@@ -7,6 +7,7 @@ import 'package:egresso_ifpi/domain/model/usuario.dart';
 import 'package:egresso_ifpi/domain/service/auth_service.dart';
 import 'package:egresso_ifpi/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 part 'login_controller.g.dart';
@@ -36,11 +37,61 @@ abstract class _LoginControllerBase with Store {
   @action
   setCursoSelect(value) => cursoSelect = value;
 
+  // verificarSeUsuarioEstaCadastrado(
+  //     String email, String password, Function message, Function action) async {
+  //   try {
+  //     utils.iniciarLoding();
+  //     await FirebaseFirestore.instance
+  //         .collection('pessoa')
+  //         .where('email', isEqualTo: email)
+  //         .get()
+  //         .then((value) {
+  //       if (value.docs.length > 0) {
+  //         authService.loginWithMail(email, password).then((value) async {
+  //           utils.encerrarLoading();
+  //           UserCredential usuario = value;
+  //           await userController.recoveryUserFromAuth(usuario.user.uid);
+
+  //           action();
+  //         }).catchError((error) {
+  //           print('erro encontrado  $error');
+  //           utils.encerrarLoading();
+  //           message(validateErrorsLogin(error.code));
+  //         });
+  //         // authService.createLoginWithMail(email, password).then((value) async {
+  //         //   UserCredential usuario = value;
+  //         //   saveUser(usuario.user.uid);
+  //         //   await userController.recoveryUserFromAuth(usuario.user.uid);
+  //         //   action();
+  //         // }).catchError((error) {
+  //         //   print('ENTROU NO ERRO');
+  //         //   print(error.code);
+  //         //   if (error == 'email-already-in-use') {
+  //         //     print('ENTROU NO ERRO');
+  //         //   }
+  //         // });
+  //         // loginComEmail(email, password, message, action);
+  //       } else {
+  //         message('Não foi encontrado nenhum cadastro para esse usuário.');
+  //       }
+  //     });
+  //     utils.encerrarLoading();
+  //   } catch (e) {
+  //     utils.encerrarLoading();
+  //     message('Ocorreu um erro, tente novamente.');
+  //   }
+  // }
+
+  @action
+  Future recuperarSenhaUsuario(String email) async {
+    await authService.recuperarSenha(email);
+  }
+
+
   @action
   loginComEmail(
       String email, String password, Function message, Function action) async {
     utils.iniciarLoding();
-
     await authService.loginWithMail(email, password).then((value) async {
       utils.encerrarLoading();
       UserCredential usuario = value;

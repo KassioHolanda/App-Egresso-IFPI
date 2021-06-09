@@ -12,6 +12,10 @@ class AuthService {
     }
   }
 
+  Future recuperarSenha(String emailRecebido) async {
+    await auth.sendPasswordResetEmail(email: emailRecebido);
+  }
+
   Future loginWithMail(String email, String senha) async {
     return await auth.signInWithEmailAndPassword(email: email, password: senha);
     //     .then((value) {

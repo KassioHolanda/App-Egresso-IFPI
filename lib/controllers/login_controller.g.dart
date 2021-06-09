@@ -99,6 +99,15 @@ mixin _$LoginController on _LoginControllerBase, Store {
     });
   }
 
+  final _$recuperarSenhaUsuarioAsyncAction =
+      AsyncAction('_LoginControllerBase.recuperarSenhaUsuario');
+
+  @override
+  Future<dynamic> recuperarSenhaUsuario(String email) {
+    return _$recuperarSenhaUsuarioAsyncAction
+        .run(() => super.recuperarSenhaUsuario(email));
+  }
+
   final _$loginComEmailAsyncAction =
       AsyncAction('_LoginControllerBase.loginComEmail');
 

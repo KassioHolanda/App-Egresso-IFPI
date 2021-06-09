@@ -81,37 +81,6 @@ class UserCard extends StatelessWidget {
                       },
                     ),
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                          child: FlatButton(
-                        color: Colors.blue,
-                        onPressed: () {},
-                        child: Text(
-                          'Editar',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                          child: FlatButton(
-                        color: Colors.red,
-                        onPressed: () {},
-                        child: Text(
-                          'Remover',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )),
-                      SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                  )
                 ],
                 // tilePadding: EdgeInsets.only(right: 10),
                 subtitle: manageUserController.usuario.tipoUsuario == 'admin'
@@ -120,7 +89,7 @@ class UserCard extends StatelessWidget {
                         style: TextStyle(color: Colors.black),
                       )
                     : Text(
-                        '${manageUserController.cursoFuncionarioModel.cargo}',
+                        '${manageUserController.cursoFuncionarioModel.cargo ?? ''}',
                         style: TextStyle(color: Colors.black),
                       ),
                 title: Text(
